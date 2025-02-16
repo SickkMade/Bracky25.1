@@ -6,7 +6,6 @@ public class TurnValveCrank : MonoBehaviour, IGrabbable
     [SerializeField] private float rotationSpeed = 5;
     public void OnGrabbed()
     {
-        print("grabbed");
         if(lastMousePosition == Vector2.zero) lastMousePosition = Input.mousePosition;
 
         Vector2 newMousePosition = Input.mousePosition;

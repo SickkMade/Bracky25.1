@@ -20,15 +20,19 @@ public class PlayerInteract : MonoBehaviour, IInteractor
             Interact();
         }
 
-
+    }
+    void LateUpdate()
+    {
         if (heldObject != null)
         {
+            // To fix jittering, move to function called AFTER movement done
             heldObject.getObject().transform.position = cam.transform.position + (cam.transform.forward * heldObject.getHoldDistance());
             heldObject.getObject().transform.rotation = cam.transform.rotation;
 
             if (Input.GetKeyDown(KeyCode.F))
             {
                 heldObject.Drop();
+                heldObject = null;
             }
         }
     }
@@ -49,13 +53,13 @@ public class PlayerInteract : MonoBehaviour, IInteractor
         {
             Debug.Log("Hit object: " + hit.collider.gameObject.name);
         }
-        // If we hit nothing, do nothing
-        if (hit.collider == null)
+        else
         {
             return;
         }
 
-        IInteractable iObj = hit.collider.gameObject.GetComponent<IInteractable>();
+        IInteractable iObj;
+        hit.collider.gameObject.TryGetComponent<IInteractable>(out iObj);
         if (iObj != null)
         {
             iObj.OnInteract(this);
@@ -69,6 +73,7 @@ public class PlayerInteract : MonoBehaviour, IInteractor
         {
             return false;
         }
+        heldObject = obj;
         return true;
     }
 
