@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class SoundManager : MonoBehaviour
+public class AudioManager : MonoBehaviour
 {
     [SerializeField] private AudioSource musicAudio;
     [SerializeField] private AudioSource sfxAudio;
@@ -26,7 +26,7 @@ public class SoundManager : MonoBehaviour
     }
 
     // Static instance of GameManager
-    public static SoundManager Instance { get; private set; }
+    public static AudioManager Instance { get; private set; }
 
     // why is this so well commented it looks ai :sob: I SWEAR I WROTE THIS LOL
     private void Awake()
