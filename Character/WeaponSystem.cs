@@ -12,7 +12,7 @@ public class WeaponSystem : MonoBehaviour
             return _weaponIndex;
         }
         set {
-            _weaponIndex = (_weaponIndex + value) % inventory.Count;
+            _weaponIndex = value % weaponInventory.Count;
         }
     }
 
@@ -39,9 +39,10 @@ public class WeaponSystem : MonoBehaviour
     void CreateObjectsAndAddToList(){
         foreach(GameObject weaponPrefab in inventory){
             if(weaponPrefab.TryGetComponent<IWeapon>(out IWeapon weapon)){
-                weaponInventory.Add(weapon);
-                Instantiate(weaponPrefab, transform);
-            }
+                GameObject Instantiated = Instantiate(weaponPrefab, transform);
+                Instantiated.SetActive(false);
+                weaponInventory.Add(Instantiated.GetComponent<IWeapon>());
+            } //lol needs refactor
         }
     }
 
@@ -49,6 +50,7 @@ public class WeaponSystem : MonoBehaviour
         weaponInventory[WeaponIndex].WeaponObject.SetActive(false);
         WeaponIndex += 1;
         weaponInventory[WeaponIndex].WeaponObject.SetActive(true);
+        print(WeaponIndex);
     }
 
     void ActivateWeapon(){

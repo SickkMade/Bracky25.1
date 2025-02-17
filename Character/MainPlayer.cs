@@ -42,16 +42,14 @@ public class MainPlayer : MonoBehaviour
 
     float yVelocity = 0;
 
-    void Awake()
-    {
-        PlayerManager.Instance.playerData.playerCamera = GetComponentInChildren<CinemachineCamera>();
-        PlayerManager.Instance.ChangeCharacterActive(true);
-    }
     void Start()
     {
         speed = walkSpeed;
         PlayerManager.OnChangeCharacterActive += OnCharacterActivityChanges;
         OnCharacterActivityChanges();
+
+        PlayerManager.Instance.playerData.playerCamera = GetComponentInChildren<CinemachineCamera>();
+        PlayerManager.Instance.ChangeCharacterActive(true);
     }
 
     void Update()

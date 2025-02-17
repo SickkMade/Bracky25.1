@@ -45,10 +45,8 @@ public class PauseManager : MonoBehaviour
     }
     public void UnPause(){
         OnUIStateChange(UIState.Playing);
-        if(isCharacterActive){
-            PlayerManager.Instance.ChangeCharacterActive(true);
-            isCharacterActive = true;
-        }
+        PlayerManager.Instance.ChangeCharacterActive(isCharacterActive);
+        isCharacterActive = true;
         Time.timeScale = 1;
     }
 }
