@@ -6,7 +6,12 @@ public class TurnValve : MonoBehaviour
     private bool isActive = false;
     private IGrabbable crank = null;
     [SerializeField] private LayerMask layerToIgnore;
-    void Update() //checking even when not playing, neeed to fix
+
+    void Start()
+    {
+        MiniGameScript.CallMiniGame += OnUpdate;
+    }
+    void OnUpdate() //checking even when not playing, neeed to fix
     {
         if(Input.GetMouseButtonDown(0)){
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);

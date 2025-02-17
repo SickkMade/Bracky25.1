@@ -4,5 +4,14 @@ public interface IInteractor
 {
     public bool PickupObject(IHeldObject obj);
 
-    public IHeldObject GetHeldObject();
+    IHeldObject HeldObject
+    {
+        get;
+    }
+
+    /// <summary>
+    /// Call when the object is "Used"
+    /// Player no longer holds that object.
+    /// </summary>
+    public void RemoveHeldObject();
 }

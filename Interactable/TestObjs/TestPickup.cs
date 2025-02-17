@@ -1,98 +1,84 @@
 using System;
 using Unity.VisualScripting;
 using UnityEngine;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(Rigidbody))]
 public class TestPickup : MonoBehaviour, IHeldObject
 {
-    [SerializeField] float holdDistance;
+    [SerializeField]  float holdDistance;
+    public float HoldDistance => holdDistance;
+
+    [SerializeField] string id;
+    public string ID => id;
+
+
+
+    [SerializeField] private AudioClip sfHit;
 
     #region Dropping vars
-    float physTimeAfterGrounded = 2f;
-    bool isDropped;
-    bool isHeld = false;
+    IInteractor holder;
     Rigidbody rb;
-    Collider[] objColliders;
-    private float lastYPos;
-    private bool grounded;
-    private float countToLock = 0;
-    private bool lockPos = false;
-    private float timeOutTime = 5.0f;
-    private float countToRespawn = 5.0f;
+    Collider objCollider;
+    private readonly float respawnY = -20;
+
+
+    public GameObject GObject => gameObject;
+
+    Vector3 objHalfSize;
+    public Vector3 HalfSize => objHalfSize;
+
+    private Animator animator;
+    bool destroyOnUse => animator == null;
+
+    private float curSoundCooldown = 0f;
+    private float soundCooldown = 0.2f;
     #endregion
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         rb = GetComponent<Rigidbody>();
-        objColliders = GetComponents<Collider>();
+        objCollider = GetComponent<Collider>();
+        objHalfSize = objCollider.bounds.size / 2;
+        TryGetComponent<Animator>(out animator);
     }
 
     // Update is called once per frame
     void Update()
     {
-        #region Dropping Code
-        if (!isHeld)
+        curSoundCooldown -= Time.deltaTime;
+        if(transform.position.y < respawnY)
         {
-
-            grounded = (lastYPos == transform.position.y);
-            if (grounded)
-            {
-                countToRespawn = timeOutTime;
-            }
-            else
-            {
-                countToRespawn -= Time.deltaTime;
-                if (countToRespawn < 0)
-                {
-                    transform.position = PlayerManager.Instance.playerData.position + Vector3.up;
-                    Drop();
-                }
-            }
-
-            if (isDropped)
-            {
-                if (grounded)
-                {
-                    isDropped = false;
-                    countToLock = physTimeAfterGrounded;
-                    lockPos = false;
-                }
-
-            }
-            else if (!lockPos)
-            {
-                countToLock -= Time.deltaTime;
-                if (countToLock < 0)
-                {
-                    rb.angularVelocity = Vector3.zero;
-                    rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
-                    lockPos = true;
-
-                }
-            }
+            transform.position = PlayerManager.Instance.playerData.position + Vector3.up;
+            rb.linearVelocity = UnityEngine.Random.insideUnitSphere;
+            rb.angularVelocity = Vector3.zero;
         }
-            #endregion
-        }
+    }
 
-        public void DoInteraction()
+    public void UseWithObject()
     {
-        throw new System.NotImplementedException();
+        holder.RemoveHeldObject();
+        if (destroyOnUse)
+        {
+            Destroy(this.gameObject);
+            return;
+        }
+        else
+        {
+            // Play Animation?
+        }
     }
 
     public void Drop()
     {
-        isHeld = false;
-        foreach (Collider c in objColliders)
-        {
-            c.enabled = true;
-        }
-        // Prevent player from dropping objects in other objects / out of the map.
-        isDropped = true;
+        objCollider.enabled = true;
         rb.isKinematic = false;
-        lastYPos = transform.position.y;
-        lockPos = false;
+        rb.angularVelocity = UnityEngine.Random.insideUnitSphere * 5;
+        rb.linearVelocity = UnityEngine.Random.insideUnitSphere;
+        holder = null;
+
     }
 
     public void OnInteract(IInteractor interactor)
@@ -104,27 +90,23 @@ public class TestPickup : MonoBehaviour, IHeldObject
         if (interactor.PickupObject(this))
         {
             Debug.Log("Object Picked Up!");
-            foreach (Collider c in objColliders)
-            {
-                c.enabled = false;
-            }
-            isHeld = true;
-            countToRespawn = timeOutTime;
+            objCollider.enabled = false;
+            holder = interactor;
         }
     }
 
     public void OnPickup()
-    { 
+    {
 
     }
 
-    public float getHoldDistance()
+    public void OnCollisionEnter(Collision collision)
     {
-        return holdDistance;
-    }
-
-    public GameObject getObject()
-    {
-        return gameObject;
+        if (curSoundCooldown < 0 && sfHit)
+        {
+            curSoundCooldown = soundCooldown;
+            float volumeAdj = Mathf.Max(rb.linearVelocity.magnitude / 3, 0.1f);
+            AudioManager.Instance.PlayOneShot(sfHit, transform.position, volumeAdj);
+        }
     }
 }

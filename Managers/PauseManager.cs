@@ -7,6 +7,9 @@ public class PauseManager : MonoBehaviour
     public delegate void uiStateDelegate(UIState state);
     public static event uiStateDelegate OnUIStateChange;
 
+    //used to check if Player should be set active //will put in playerdata if becomes problem but i think its fine
+    private bool isCharacterActive = true;
+
     private void Awake()
     {
         if (Instance == null)
@@ -36,10 +39,16 @@ public class PauseManager : MonoBehaviour
     }
 
     private void Pause(){
+        isCharacterActive = PlayerManager.Instance.playerData.isCharacterActive;
+        PlayerManager.Instance.ChangeCharacterActive(false);
         Time.timeScale = 0;
     }
     public void UnPause(){
         OnUIStateChange(UIState.Playing);
+        if(isCharacterActive){
+            PlayerManager.Instance.ChangeCharacterActive(true);
+            isCharacterActive = true;
+        }
         Time.timeScale = 1;
     }
 }

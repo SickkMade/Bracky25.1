@@ -17,7 +17,16 @@ public class TestCube : MonoBehaviour, IInteractable
     }
     public void OnInteract(IInteractor interactor)
     {
-        Vector3 newColor = Random.insideUnitSphere;
-        m_Renderer.material.color = new Color(newColor.x, newColor.y, newColor.z);
+        if (interactor.HeldObject == null)
+        {
+
+            Vector3 newColor = Random.insideUnitSphere;
+            m_Renderer.material.color = new Color(newColor.x, newColor.y, newColor.z);
+        }
+        else if(interactor.HeldObject.ID == "Sphere")
+        {
+            transform.localScale *= 2f;
+            interactor.HeldObject.UseWithObject();
+        }
     }
 }

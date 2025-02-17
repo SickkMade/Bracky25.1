@@ -1,3 +1,4 @@
+using System;
 using Unity.Cinemachine;
 using UnityEngine;
 
@@ -8,6 +9,7 @@ public class MiniGameScript : MonoBehaviour, IInteractable
 
     CinemachineCamera main;
     [SerializeField] CinemachineCamera miniGameCamera;
+    public static event Action CallMiniGame; //calls in update when active
 
     public void OnInteract(IInteractor interactor)
     {
@@ -26,6 +28,12 @@ public class MiniGameScript : MonoBehaviour, IInteractable
 
         miniGameCamera.Priority = 20;
         main.Priority = 10;
+    }
+
+    void Update(){
+        if(isBeingUsed){
+            CallMiniGame?.Invoke();
+        }
     }
 
     private void ExitGame(){
