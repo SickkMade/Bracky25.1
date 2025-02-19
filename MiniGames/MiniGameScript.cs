@@ -1,6 +1,7 @@
 using System;
 using Unity.Cinemachine;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class MiniGameScript : MonoBehaviour, IInteractable
 {
@@ -9,7 +10,8 @@ public class MiniGameScript : MonoBehaviour, IInteractable
 
     CinemachineCamera main;
     [SerializeField] CinemachineCamera miniGameCamera;
-    public static event Action CallMiniGame; //calls in update when active
+    public UnityEvent CallMiniGame; //calls in update when active
+    public UnityEvent CleanUpMiniGame;
 
     public void OnInteract(IInteractor interactor)
     {
@@ -40,6 +42,7 @@ public class MiniGameScript : MonoBehaviour, IInteractable
         miniGameCamera.Priority = 10;
         main.Priority = 20;
         PlayerManager.Instance.ChangeCharacterActive(true);
-        isBeingUsed = false;
+        isBeingUsed = false; 
+        CleanUpMiniGame?.Invoke();
     }
 }

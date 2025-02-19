@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class Wires : MonoBehaviour
+public class Wires : MonoBehaviour, IGrabbable
 {
     public int connections; // Bitmask: 1 = up, 2 = right, 4 = down, 8 = left
     public bool isGenerator = false;
@@ -8,7 +8,6 @@ public class Wires : MonoBehaviour
     public void SetConnections(int mask)
     {
         connections = mask;
-        UpdateVisual();
     }
 
     public void RotateTile()
@@ -31,14 +30,7 @@ public class Wires : MonoBehaviour
         return newMask;
     }
 
-    void UpdateVisual()
-    {
-        if(isGenerator){
-            
-        }
-    }
-
-    void OnMouseDown()
+    public void OnGrabbed()
     {
         RotateTile();
     }

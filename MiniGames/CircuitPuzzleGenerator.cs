@@ -6,6 +6,7 @@ public class CircuitPuzzleGenerator : MonoBehaviour
     public int gridSize = 5;
     public float tileSize = 1f;
     public GameObject[] tilePrefabs;
+    public GameObject generator;
     MazeCell[,] grid;
 
     void Start()
@@ -93,8 +94,14 @@ public class CircuitPuzzleGenerator : MonoBehaviour
 
                 int connectionCount = CountConnections(mask);
 
-                GameObject prefabToUse = tilePrefabs[connectionCount];
-                GameObject tile = Instantiate(prefabToUse, pos, Quaternion.identity, transform);
+                GameObject prefabToUse;
+                
+                if (IsDeadEnd(grid[x, y])){
+                    prefabToUse = generator;
+                } else{
+                    prefabToUse = tilePrefabs[connectionCount];
+                }
+                GameObject tile = Instantiate(prefabToUse, pos, Quaternion.identity, transform);;
                 tile.transform.localScale = Vector3.one * tileSize;
                 Wires wires = tile.GetComponent<Wires>();
 
