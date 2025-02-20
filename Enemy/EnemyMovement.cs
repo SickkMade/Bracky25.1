@@ -17,3 +17,9 @@ public class EnemyMovement : MonoBehaviour
         agent.SetDestination(PlayerManager.Instance.playerData.position);
     }
 }
+
+public enum EnemyState
+{
+    Wander,
+    Chase
+}

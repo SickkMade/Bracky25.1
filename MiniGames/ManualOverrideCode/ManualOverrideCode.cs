@@ -32,7 +32,7 @@ public class ManualOverrideCode : MonoBehaviour
         {
             if (generating)
             {
-                if(curGenerateTime < 0.0f)
+                if (curGenerateTime < 0.0f)
                 {
                     generating = false;
                     curGenerateTime = generateTime;
@@ -48,10 +48,15 @@ public class ManualOverrideCode : MonoBehaviour
                     curGenerateTime -= Time.deltaTime;
                 }
             }
+            else if (Input.GetKeyDown(KeyCode.KeypadEnter))
+            {
+                CheckInput();
+            }
             return;
         }
         isActive = true;
         canvas.enabled = true;
+        inputField.Select();
     }
 
     public void CheckInput()
@@ -77,9 +82,11 @@ public class ManualOverrideCode : MonoBehaviour
         else
         {
             //AudioManager.Instance.PlayOneShot(AudioManager.Failure);
-            Debug.Log(input.Length); 
+            Debug.Log(input.Length);
             Debug.Log(code.Length);
         }
+
+        inputField.Select();
     }
 
     public void CleanUp()
@@ -90,5 +97,6 @@ public class ManualOverrideCode : MonoBehaviour
             i.sprite = progSprites[0];
         }
         canvas.enabled = false;
+        isActive = false;
     }
 }

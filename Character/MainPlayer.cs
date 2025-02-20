@@ -12,11 +12,19 @@ public class MainPlayer : MonoBehaviour
     private int ammountOfJumps = 2;
     private int _currentJumps;
 
-    [SerializeField, Range(0, 200), Space]
+    [SerializeField, Range(1, 200), Space]
     float walkSpeed = 5f;
 
-    [SerializeField, Range(0, 200)]
+    [SerializeField, Range(1, 200)]
     float runSpeed = 7.5f;
+
+    [SerializeField, Range(1, 120)]
+    float maxRunDuration = 6f;
+
+    [SerializeField, Range(0.01f, 5)]
+    float runRechargeRate = 1f;
+
+    float curRunAmount = 0.0f;
 
     [SerializeField, Range(0.01f, 50), Space]
     float lookSpeed = 3;
@@ -34,6 +42,8 @@ public class MainPlayer : MonoBehaviour
     bool dead;
 
     bool IsGrounded => characterController.isGrounded;
+
+
 
     /// <summary>
     /// A rough position of where the player's face is. uses the camera as the face position
@@ -69,11 +79,22 @@ public class MainPlayer : MonoBehaviour
 
             if (Input.GetKey(KeyCode.LeftShift))
             {
-                speed = runSpeed;
+                if(curRunAmount > 0)
+                {
+                    speed = runSpeed;
+                    curRunAmount -= Time.deltaTime;
+                }
+                else
+                {
+                    speed = walkSpeed;
+                }
+
             }
             else
             {
                 speed = walkSpeed;
+                curRunAmount += Time.deltaTime;
+                curRunAmount = Mathf.Min(curRunAmount, maxRunDuration);
             }
         }
         else if (_currentJumps > 0 && Input.GetButtonDown("Jump"))

@@ -11,6 +11,7 @@ public class PlayerInteract : MonoBehaviour, IInteractor
     public IHeldObject HeldObject => heldObject;
 
     [SerializeField] float interactRange = 4;
+    [SerializeField] AudioClip audPickupSound;
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
@@ -114,6 +115,8 @@ public class PlayerInteract : MonoBehaviour, IInteractor
         {
             return false;
         }
+        // Pickup Sound
+        AudioManager.Instance.PlayOneShot(audPickupSound);
         heldObject = obj;
         return true;
     }

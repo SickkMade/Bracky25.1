@@ -78,6 +78,22 @@ public class CircuitPuzzleGenerator : MonoBehaviour
         }
     }
 
+    bool IsStraight(int mask)
+    {
+        List<int> setBits = new List<int>();
+        for (int i = 0; i < 4; i++)
+        {
+            if ((mask & (1 << i)) != 0)
+                setBits.Add(i);
+        }
+
+        if (setBits.Count != 2) return false; 
+        
+        int diff = Mathf.Abs(setBits[0] - setBits[1]);
+        return diff == 2;
+    }
+
+
     void InstantiateTiles()
     {
         float maxWidth = tileSize * gridSize;
@@ -95,12 +111,17 @@ public class CircuitPuzzleGenerator : MonoBehaviour
                 int connectionCount = CountConnections(mask);
 
                 GameObject prefabToUse;
-                
+
                 if (IsDeadEnd(grid[x, y])){
                     prefabToUse = generator;
                 } else{
-                    prefabToUse = tilePrefabs[connectionCount];
+                    prefabToUse = tilePrefabs[connectionCount-1];
                 }
+
+                if(connectionCount == 2 && IsStraight(mask)){
+                    prefabToUse = tilePrefabs[0];
+                }
+
                 GameObject tile = Instantiate(prefabToUse, pos, Quaternion.identity, transform);;
                 tile.transform.localScale = Vector3.one * tileSize;
                 Wires wires = tile.GetComponent<Wires>();
@@ -109,10 +130,12 @@ public class CircuitPuzzleGenerator : MonoBehaviour
 
                 if (IsDeadEnd(grid[x, y]))
                     wires.isGenerator = true;
-
-                int rotations = Random.Range(0, 4);
-                for (int i = 0; i < rotations; i++)
-                    wires.RotateTile();
+                else{
+                    int rotations = Random.Range(0,4);
+                    for (int i = 0; i < rotations; i++)
+                        wires.RotateTile();
+                }
+                
             }
     }
 
