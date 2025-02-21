@@ -19,6 +19,7 @@ public class WeaponSystem : MonoBehaviour
     void Start()
     {
         CreateObjectsAndAddToList();
+        SetWeapon(0);
     }
 
     void Update()
@@ -26,6 +27,7 @@ public class WeaponSystem : MonoBehaviour
         if(!PlayerManager.Instance.playerData.isCharacterActive) return;
 
         if(Input.GetKeyDown(KeyCode.Tab)){
+            DeactivateWeapon();
             ChangeWeapon();
         }
         if(Input.GetKeyDown(KeyCode.F)){
@@ -50,7 +52,6 @@ public class WeaponSystem : MonoBehaviour
         weaponInventory[WeaponIndex].WeaponObject.SetActive(false);
         WeaponIndex += 1;
         weaponInventory[WeaponIndex].WeaponObject.SetActive(true);
-        print(WeaponIndex);
     }
 
     void ActivateWeapon(){
@@ -59,6 +60,12 @@ public class WeaponSystem : MonoBehaviour
 
     void DeactivateWeapon(){
         weaponInventory[WeaponIndex].ActionOff();
+    }
+
+    void SetWeapon(int weaponIndex){
+        weaponInventory[WeaponIndex].WeaponObject.SetActive(false);
+        WeaponIndex = weaponIndex;
+        weaponInventory[WeaponIndex].WeaponObject.SetActive(true);
     }
 
 }

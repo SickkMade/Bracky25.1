@@ -13,9 +13,9 @@ public class TurnValveCrank : MonoBehaviour, IGrabbable
         lastMousePosition = newMousePosition;
 
         this.transform.eulerAngles = new Vector3(
-        this.transform.eulerAngles.x,
+        this.transform.eulerAngles.x + (mouseDistance * Time.deltaTime * rotationSpeed),
         this.transform.eulerAngles.y,
-        this.transform.eulerAngles.z - (mouseDistance * Time.deltaTime * rotationSpeed)
+        this.transform.eulerAngles.z
         );
     }
 }

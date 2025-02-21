@@ -34,7 +34,7 @@ public class Wires : MonoBehaviour, IGrabbable
                 if((mask & 2) > 0) rotations = 1; 
                 break;
             case WireTypes.gen:
-                rotations = (int)Math.Log(mask, 2) + 1;
+                rotations = (int)Math.Log(mask, 2);
                 break;
             case WireTypes.curve:
                 switch(mask){
@@ -49,23 +49,23 @@ public class Wires : MonoBehaviour, IGrabbable
                         break;
                 }
                 break;
-                case WireTypes.cross:
+                case WireTypes.triple:
                 switch(mask){
-                    case 13:
-                        rotations = 1;
+                    case 14:
+                        rotations = 3;
                         break;
                     case 11:
-                        rotations = 2;
+                        rotations = 1;
                         break;
                     case 7:
-                        rotations = 3;
+                        rotations = 2;
                         break;
                 }
                 break;
         }
-        print($"x:{gridX}, y:{gridY}, rotations:{rotations}, wiretype:{wireType}, mask:{mask}");
+        // print($"x:{gridX}, y:{gridY}, rotations:{rotations}, wiretype:{wireType}, mask:{mask}");
         for(int i = 0; i < rotations; i++){
-            RotateTile();
+            transform.Rotate(0, 0, -90);
         }
 
     }

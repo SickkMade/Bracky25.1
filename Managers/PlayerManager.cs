@@ -9,6 +9,8 @@ public struct PlayerData
     public Vector3 position;
     public CinemachineCamera playerCamera;
     public bool isCharacterActive;
+    // Hard coded lol
+    public bool IsInTunnels => position.y < 25;
 }
 public class PlayerManager : MonoBehaviour
 {

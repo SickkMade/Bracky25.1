@@ -4,8 +4,21 @@ using UnityEngine;
 public class AudioManager : MonoBehaviour
 {
     [SerializeField] private AudioSource musicAudio;
+    [SerializeField] private AudioSource musicAudio2;
     [SerializeField] private AudioSource sfxAudio;
     [SerializeField] private AudioSource localAudio;
+
+    [SerializeField] private AudioClip mainGameMusic;
+    [SerializeField] private AudioClip tunnelsMusic;
+    [SerializeField] private AudioClip EnemyDrums;
+    [SerializeField] private AudioClip minigameMusic;
+
+    private MusicState musicState = MusicState.Main;
+    private bool curChasing = false;
+    private bool changeToChase = false;
+    [SerializeField, Range(0f, 10f)] float chaseFadeTime = 5f; 
+   float curChaseFadeTime = 0f; 
+
     private float _musicAudio = 1;
     private float _sfxAudio = 1;
     public float MusicVolume {
@@ -66,4 +79,71 @@ public class AudioManager : MonoBehaviour
 
     }
 
+    public void Update()
+    {
+        if (changeToChase && !curChasing)
+        {
+            float t = musicAudio.time;
+            musicAudio2.Play();
+            musicAudio2.time = t;
+            curChasing = true;
+        }
+
+        if (musicState == MusicState.Main)
+        {
+            if (PlayerManager.Instance.playerData.IsInTunnels)
+            {
+                float t = musicAudio.time;
+                musicAudio.clip = tunnelsMusic; 
+                musicAudio.Play();
+                musicAudio.time = t;
+                musicState = MusicState.Tunnels;
+            }
+        }
+
+        if (musicState == MusicState.Tunnels)
+        {
+            if (!PlayerManager.Instance.playerData.IsInTunnels)
+            {
+                float t = musicAudio.time;
+                musicAudio.clip = mainGameMusic; 
+                musicAudio.Play();
+                musicAudio.time = t;
+                musicState = MusicState.Main;
+            }
+        }
+
+        if(curChasing)
+        {
+            if (changeToChase)
+            {
+                changeToChase = false;
+                curChaseFadeTime = chaseFadeTime;
+                musicAudio2.volume = MusicVolume;
+            }
+            else
+            {
+                curChaseFadeTime -= Time.deltaTime;
+                musicAudio2.volume = MusicVolume * (curChaseFadeTime / chaseFadeTime);
+                if(curChaseFadeTime < 0)
+                {
+                    curChasing = false;
+                    musicAudio2.Stop();
+                }
+            }
+        }
+
+    }
+
+    public void ChangeToChase()
+    {
+        Debug.Log("CHASE");
+        changeToChase = true;
+    }
+
+    public enum MusicState
+    {
+        Main,
+        Tunnels
+    }
 }

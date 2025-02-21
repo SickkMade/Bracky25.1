@@ -1,11 +1,43 @@
 using System;
 using System.Collections.Generic;
+using System.Data.Common;
 using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
 {
     public static GameManager Instance { get; private set; }
+
+    #region questevents
+        public delegate void ButtonDelegate(string buttonId);
+        public static event ButtonDelegate ButtonPressedEvent;
+        public void InvokeButtonPressedEvent(string id){
+            ButtonPressedEvent?.Invoke(id);
+        }
+
+        public QuestEvents questEvents;
+
+    #endregion
+
+
+    private void Awake()
+    {
+        // Check if Instance already exists
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject); // Persist between scenes
+        }
+        else
+        {
+            Destroy(gameObject); // Enforce singleton pattern
+        }
+
+
+        questEvents = new();
+    }
+
+
 
     [Header("Game Difficulty Settings")]
     [SerializeField, Range(30f, 300f)] float minBreakTime;

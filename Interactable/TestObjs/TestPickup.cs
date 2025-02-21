@@ -22,7 +22,7 @@ public class TestPickup : MonoBehaviour, IHeldObject
     Rigidbody rb;
     Collider objCollider;
     private readonly float respawnY = -20;
-
+    public bool Dropped => rb.isKinematic;
 
     public GameObject GObject => gameObject;
 
@@ -97,7 +97,7 @@ public class TestPickup : MonoBehaviour, IHeldObject
 
     public void OnPickup()
     {
-
+        // Play Sound Effect
     }
 
     public void OnCollisionEnter(Collision collision)
@@ -108,5 +108,10 @@ public class TestPickup : MonoBehaviour, IHeldObject
             float volumeAdj = Mathf.Max(rb.linearVelocity.magnitude / 3, 0.1f);
             AudioManager.Instance.PlayOneShot(sfHit, transform.position, volumeAdj);
         }
+    }
+
+    protected void updateId(string newId)
+    {
+        id = newId;
     }
 }

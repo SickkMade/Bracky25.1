@@ -124,11 +124,11 @@ public class CircuitPuzzleGenerator : MonoBehaviour
                 if (!grid[x, y].walls[2]) mask |= 4;
                 if (!grid[x, y].walls[3]) mask |= 8;
                 int connectionCount = CountConnections(mask);
+                if (connectionCount == 2 && IsStraight(mask)) connectionCount = 1;
                 GameObject prefabToUse;
 
                 if (IsDeadEnd(grid[x, y])) prefabToUse = generator;
                 else prefabToUse = tilePrefabs[connectionCount - 1];
-                if (connectionCount == 2 && IsStraight(mask)) prefabToUse = tilePrefabs[0];
 
                 GameObject tile = Instantiate(prefabToUse, pos, Quaternion.identity, transform);
                 tile.transform.localScale = Vector3.one * tileSize;
@@ -143,7 +143,7 @@ public class CircuitPuzzleGenerator : MonoBehaviour
                 }
                 else
                 {
-                    wires.SetConnections(mask, (WireTypes)connectionCount);
+                    wires.SetConnections(mask, (WireTypes)(connectionCount-1));
                     int rotations = Random.Range(0,4);
                     for (int i = 0; i < rotations; i++) wires.RotateTile();
                 }
@@ -178,18 +178,20 @@ public class CircuitPuzzleGenerator : MonoBehaviour
 
     public void CheckWinCondition()
     {
-        // for(int x = 0; x < gridSize; x++)
-        // {
-        //     for(int y = 0; y < gridSize; y++)
-        //     {
-        //         Wires w = wireGrid[x,y];
-        //         if (!w.isGenerator && CountConnections(w.connections) > 0 && !w.isActive)
-        //         {
-        //             return; 
-        //         }
-        //     }
-        // }
-        // Debug.Log("Puzzle Solved!");
+        if (wireGrid == null) return;
+        for(int x = 0; x < gridSize; x++)
+        {
+            for(int y = 0; y < gridSize; y++)
+            {
+                Wires w = wireGrid[x,y];
+                // w.CheckNeighborActivity();
+                if (w && !w.isGenerator && CountConnections(w.connections) > 0 && !w.isActive)
+                {
+                    return; 
+                }
+            }
+        }
+        Debug.Log("Puzzle Solved!");
     }
 }
 public class MazeCell
