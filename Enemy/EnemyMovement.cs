@@ -5,7 +5,7 @@ using UnityEngine.AI;
 [RequireComponent (typeof(NavMeshAgent))]
 public class EnemyMovement : MonoBehaviour
 {
-    [SerializeField] float WanderRadius = 20f;
+    [SerializeField] float WanderRadius = 30f;
     [SerializeField] float ChaseMusicRadius = 5f;
     private NavMeshAgent agent;
     private EnemyState eState = EnemyState.Wander;
@@ -39,7 +39,7 @@ public class EnemyMovement : MonoBehaviour
         {
             agent.SetDestination(PlayerManager.Instance.playerData.position);
             targetPos = PlayerManager.Instance.playerData.position;
-            if (Mathf.Abs(transform.position.x - targetPos.x) + Mathf.Abs(transform.position.z - targetPos.z) < ChaseMusicRadius)
+            if (agent.remainingDistance < ChaseMusicRadius)
             {
                 Debug.Log("Chase?");
                 AudioManager.Instance.ChangeToChase();

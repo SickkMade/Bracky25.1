@@ -15,6 +15,11 @@ public class GameManager : MonoBehaviour
             ButtonPressedEvent?.Invoke(id);
         }
 
+        public static event Action<string> EnterCodeEvent;
+        public void InvokeEnterCodeEvent(string code){
+            EnterCodeEvent?.Invoke(code);
+        }
+
         public QuestEvents questEvents;
 
     #endregion

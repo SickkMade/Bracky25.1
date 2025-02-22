@@ -15,11 +15,15 @@ public interface IHeldObject : IInteractable
         get;
     }
 
+    Vector3 HeldRotation { get; }
+
     Vector3 HalfSize { get; }
 
     public void OnPickup();
     public void Drop();
 
     public void UseWithObject();
+
+    
 
 }

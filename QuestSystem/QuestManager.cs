@@ -95,6 +95,7 @@ public class QuestManager : MonoBehaviour
             }   
             idToQuestMap.Add(questInfoSO.id, new Quest(questInfoSO));
         }
+        // print(idToQuestMap.Count);
         return idToQuestMap;
     }
 

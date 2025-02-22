@@ -15,6 +15,11 @@ public class QuestPoint : MonoBehaviour
         questId = questInfoForPoint.id;
     }
 
+    void Start()
+    {
+        GameManager.Instance.questEvents.StartQuest(questId);
+    }
+
     void OnEnable()
     {
         GameManager.Instance.questEvents.OnQuestStateChange += QuestStateChange;

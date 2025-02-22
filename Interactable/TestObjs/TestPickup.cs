@@ -8,6 +8,10 @@ using UnityEngine.UI;
 public class TestPickup : MonoBehaviour, IHeldObject
 {
     [SerializeField]  float holdDistance;
+    [SerializeField] Vector3 holdRotation = new();
+    public Vector3 HeldRotation => holdRotation;
+
+    
     public float HoldDistance => holdDistance;
 
     [SerializeField] string id;

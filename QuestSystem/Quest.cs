@@ -22,6 +22,7 @@ public class Quest
     }
 
     public void InstatiateCurrentQuestStep(Transform parentTransform){
+        Debug.Log($"instantiating {info.displayName}");
         GameObject questStepPrefab = GetCurrentQuestStepPrefab();
         if(questStepPrefab){
             QuestStep queststep = Object.Instantiate<GameObject>(questStepPrefab, parentTransform)
