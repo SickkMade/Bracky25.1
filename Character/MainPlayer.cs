@@ -35,6 +35,11 @@ public class MainPlayer : MonoBehaviour
     [SerializeField]
     CharacterController characterController;
 
+    [SerializeField] AudioClip[] walkingClips;
+    [SerializeField] float distbtwnSteps;
+    private float curstepDist = 0.0f;
+    [SerializeField] AudioClip[] runningClips;
+
     private float speed;
 
     private float rotationX = 0f;
@@ -68,6 +73,18 @@ public class MainPlayer : MonoBehaviour
 
         if (Time.timeScale < 0.01f || dead) return;
 
+
+        if (speed == runSpeed)
+        {
+            curRunAmount -= Time.deltaTime;
+        }
+        else if (!Input.GetKey(KeyCode.LeftShift))
+            {
+                curRunAmount += Time.deltaTime;
+                curRunAmount = Mathf.Min(curRunAmount, maxRunDuration);
+            }
+        
+
         if (IsGrounded)
         {
             _currentJumps = ammountOfJumps;
@@ -82,7 +99,6 @@ public class MainPlayer : MonoBehaviour
                 if(curRunAmount > 0)
                 {
                     speed = runSpeed;
-                    curRunAmount -= Time.deltaTime;
                 }
                 else
                 {
@@ -93,8 +109,6 @@ public class MainPlayer : MonoBehaviour
             else
             {
                 speed = walkSpeed;
-                curRunAmount += Time.deltaTime;
-                curRunAmount = Mathf.Min(curRunAmount, maxRunDuration);
             }
         }
         else if (_currentJumps > 0 && Input.GetButtonDown("Jump"))
@@ -115,9 +129,19 @@ public class MainPlayer : MonoBehaviour
         // get a smooth input intensity to give smoothing to start/stop
         float inputIntensity = Mathf.Max(Mathf.Abs(horizontal), Mathf.Abs(vertical));
         inputDirection = inputDirection * inputIntensity;
+
+
         Vector3 finalVelocty = transform.TransformDirection(inputDirection) * speed;
         finalVelocty.y = yVelocity;
         characterController.Move(finalVelocty * Time.deltaTime);
+
+
+        curstepDist += Time.deltaTime * inputIntensity * speed;
+        if (curstepDist > distbtwnSteps)
+        {
+            playStepSound();
+            curstepDist = 0.0f;
+        }
 
         //left and right rot
         // I was wondering why mouse look was funky, it turns out that
@@ -132,6 +156,21 @@ public class MainPlayer : MonoBehaviour
         PlayerManager.Instance.playerData.position = transform.position;
 
 
+
+        
+    }
+
+    private void playStepSound()
+    {
+        if (!IsGrounded) return;
+
+        AudioClip[] stepSounds = walkingClips;
+        if (speed == runSpeed)
+        {
+            stepSounds = runningClips;
+        }
+
+        AudioManager.Instance.PlayOneShot(stepSounds[Random.Range(0, stepSounds.Length)]);  
     }
     private void Jump()
     {

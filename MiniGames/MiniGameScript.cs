@@ -5,15 +5,18 @@ using UnityEngine.Events;
 
 public class MiniGameScript : MonoBehaviour, IInteractable
 {
+    [SerializeField] string MinigameID;
     private bool _isActive = true;
     public bool isActive
     {
         get { return _isActive; }
         set
         {
-            _isActive = value;
+            _isActive = value; 
+            minigameAlarm?.ToggleAlarm(value);
             if (value)
             {
+                
                 InitMiniGame?.Invoke();
             }
             else
@@ -28,6 +31,7 @@ public class MiniGameScript : MonoBehaviour, IInteractable
 
     CinemachineCamera main;
     [SerializeField] CinemachineCamera miniGameCamera;
+    [SerializeField] MinigameAlarm minigameAlarm;
     public UnityEvent CallMiniGame; //calls in update when active
     public UnityEvent InitMiniGame; //calls when minigame is SET to Active.
     public UnityEvent CleanUpMiniGame; //calls when minigame is left.

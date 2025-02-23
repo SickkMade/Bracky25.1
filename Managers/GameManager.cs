@@ -24,6 +24,12 @@ public class GameManager : MonoBehaviour
 
     #endregion
 
+    #region misc events
+        public static event Action<bool> ItemBeingHeldEvent;
+        public void InvokeItemBeingHeldEvent(bool isBeingHeld){
+            ItemBeingHeldEvent?.Invoke(isBeingHeld);
+        }
+    #endregion
 
     private void Awake()
     {
@@ -46,7 +52,7 @@ public class GameManager : MonoBehaviour
 
     [Header("Game Difficulty Settings")]
     [SerializeField, Range(30f, 300f)] float minBreakTime;
-    [SerializeField, Range(30f, 300f)] float maxBreakTime;
+    [SerializeField, Range(90f, 300f)] float maxBreakTime;
     private float curBreakTime;
 
     [SerializeField] float baseTimeToFix;
@@ -57,7 +63,8 @@ public class GameManager : MonoBehaviour
 
     [SerializeField] int targetMinigames;
 
-    private List<MiniGameScript> UnfinishedMinigames = new();
+    public Room curActive;
+    [SerializeField] List<MiniGameScript> UnfinishedMinigames = new();
     private List<MiniGameScript> FinishedMinigames = new();
 
     bool activeMinigame = false;
@@ -81,6 +88,14 @@ public class GameManager : MonoBehaviour
         UnfinishedMinigames.Add(minigame);
     }
 
+    public void Start()
+    {
+        foreach (MiniGameScript m in UnfinishedMinigames)
+        {
+            m.isActive = false;
+        }
+    }
+
     public void Update()
     {
         if (activeMinigame)
@@ -100,13 +115,17 @@ public class GameManager : MonoBehaviour
                 if (curTimeToFix < 0)
                 {
                     activeMinigame = false;
-                    //curBreakTime = R
+                    curBreakTime = UnityEngine.Random.Range(minBreakTime, maxBreakTime);
                 }
             }
         }
         else
         {
-
+            curBreakTime -= Time.deltaTime;
+            if (curBreakTime < 0)
+            {
+                BreakMinigame();
+            }
         }
     }
 
@@ -125,13 +144,18 @@ public class GameManager : MonoBehaviour
         int minigameIndex = UnityEngine.Random.Range(0, UnfinishedMinigames.Count);
         MiniGameScript nextGame = UnfinishedMinigames[minigameIndex];
 
-        //TODO: Activate next Minigame
+        ActivateMinigaame(nextGame);
 
         // Moves to finished, so it won't be called again.
         UnfinishedMinigames.RemoveAt(minigameIndex);
         FinishedMinigames.Add(nextGame);
 
         curTimeToFix = baseTimeToFix;
+    }
+
+    public void ActivateMinigaame(MiniGameScript m)
+    {
+        m.isActive = true;
     }
 
     public void MinigameCompleted()

@@ -7,14 +7,16 @@ using UnityEngine.UI;
 
 public class ManualOverrideCode : MonoBehaviour
 {
-    const string glyphs = "ABCDFGHIJKLMNOPQRSTUVWXYZ01234567890123456789";
+    const string glyphs = "ABCDEFGH0123456789";
     [SerializeField] const int codeLength = 5;
 
     private bool isActive = false;
     [SerializeField] private LayerMask layerToIgnore;
     [SerializeField] private Canvas canvas;
-    [SerializeField] private TMP_InputField inputField;
+    [SerializeField] private TextMeshProUGUI InputField;
     [SerializeField] private TextMeshProUGUI CodeDisplay;
+    [SerializeField] private TMP_FontAsset defaultFont;
+    [SerializeField] private TMP_FontAsset FunnyFont;
 
     [SerializeField] private Image[] progressIcons;
     [SerializeField] private Sprite[] progSprites;
@@ -56,18 +58,18 @@ public class ManualOverrideCode : MonoBehaviour
         }
         isActive = true;
         canvas.enabled = true;
-        inputField.Select();
+        InputField.text = "";
     }
 
     public void CheckInput()
     {
-        string input = inputField.text.ToLower().Trim();
+        string input = InputField.text.ToLower().Trim();
         string code = CodeDisplay.text.ToLower().Trim();
         if (code.Equals(input))
         {
             if (progress < progSprites.Length)
             {
-                inputField.text = "";
+                InputField.text = "";
                 generating = true;
                 progressIcons[progress].sprite = progSprites[1];
                 progress++;
@@ -76,27 +78,33 @@ public class ManualOverrideCode : MonoBehaviour
             else
             {
                 progressIcons[progress].sprite = progSprites[1];
+                CodeDisplay.font = defaultFont;
                 CodeDisplay.text = "Manual Override Engaged";
             }
         }
         else
         {
+            InputField.text = "";
             //AudioManager.Instance.PlayOneShot(AudioManager.Failure);
             Debug.Log(input.Length);
             Debug.Log(code.Length);
         }
-
-        inputField.Select();
     }
 
     public void CleanUp()
     {
         progress = 0;
-        foreach(Image i in progressIcons)
+        foreach (Image i in progressIcons)
         {
             i.sprite = progSprites[0];
         }
+        CodeDisplay.font = FunnyFont;
         canvas.enabled = false;
         isActive = false;
+    }
+
+    public void AddChar(string ch)
+    {
+        InputField.text += ch[0];
     }
 }

@@ -27,7 +27,7 @@ public class PlayerInteract : MonoBehaviour, IInteractor
             if (heldObject != null)
             {
                 Interact();
-                Debug.Log("Dropping Object");
+                
                 if (heldObject != null)
                 {
                     heldObject.Drop();
@@ -75,11 +75,10 @@ public class PlayerInteract : MonoBehaviour, IInteractor
                 if (Physics.Raycast(ray, out hit, maxDistance: interactRange, layerMask: 7))
                 {
                     holdDistance = Mathf.Min(holdDistance, hit.distance);
-                    // Debug.Log("Blocked by Object: " + hit.collider.gameObject.name);
+                    
                 }
             }
             holdDistance = Mathf.Max(Mathf.Abs(heldObject.HalfSize.z * 1.5f) + 0.25f, holdDistance);
-            //Debug.Log(holdDistance);
             heldObject.GObject.transform.position = cam.transform.position + (dir * holdDistance);
             //fucking quaternions
             heldObject.GObject.transform.rotation = cam.transform.rotation * Quaternion.Inverse(Quaternion.Euler(heldObject.HeldRotation));

@@ -49,7 +49,6 @@ public class AudioManager : MonoBehaviour
     /// <param name="volumeAdj">Volume adjustment. Clamped to 0-1. Default = 1</param>
     public void PlayOneShot(AudioClip audioClip, Vector3 pos, float volumeAdj = 1)
     {
-        Debug.Log("Playing Audio at a location");
         AudioSource localSource = Instantiate(localAudio, pos, Quaternion.identity);
         localSource.volume = SfxVolume * Mathf.Clamp(volumeAdj, 0, 1);
         localSource.enabled = true;
@@ -99,6 +98,17 @@ public class AudioManager : MonoBehaviour
                 musicAudio.time = t;
                 musicState = MusicState.Tunnels;
             }
+            else
+            {
+                if(PlayerManager.Instance.playerData.position.y < 30)
+                {
+                    musicAudio.volume = MusicVolume * (PlayerManager.Instance.playerData.position.y - 25.0f) / 5.0f;
+                }
+                else
+                {
+                    musicAudio.volume = MusicVolume;
+                }
+            }
         }
 
         if (musicState == MusicState.Tunnels)
@@ -110,6 +120,17 @@ public class AudioManager : MonoBehaviour
                 musicAudio.Play();
                 musicAudio.time = t;
                 musicState = MusicState.Main;
+            }
+            else
+            {
+                if (PlayerManager.Instance.playerData.position.y > 23)
+                {
+                    musicAudio.volume = MusicVolume * (25.0f - PlayerManager.Instance.playerData.position.y) / 2.0f;
+                }
+                else
+                {
+                    musicAudio.volume = MusicVolume;
+                }
             }
         }
 

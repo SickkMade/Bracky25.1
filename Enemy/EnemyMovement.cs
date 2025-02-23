@@ -41,7 +41,6 @@ public class EnemyMovement : MonoBehaviour
             targetPos = PlayerManager.Instance.playerData.position;
             if (agent.remainingDistance < ChaseMusicRadius)
             {
-                Debug.Log("Chase?");
                 AudioManager.Instance.ChangeToChase();
             }
             if (!PlayerManager.Instance.playerData.IsInTunnels)
@@ -65,8 +64,6 @@ public class EnemyMovement : MonoBehaviour
         {
             finalPosition = hit.position;
         }
-
-        Debug.Log("Enemy moving to " + finalPosition);
         return finalPosition;
     }
 }

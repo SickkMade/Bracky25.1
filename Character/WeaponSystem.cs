@@ -7,6 +7,8 @@ public class WeaponSystem : MonoBehaviour
     [SerializeField, Header("Please IWeapon Only")] private List<GameObject> inventory = new();
     private List<IWeapon> weaponInventory = new();
     private int _weaponIndex = 0;
+
+    private bool weaponActive = false;
     private int WeaponIndex {
         get {
             return _weaponIndex;
@@ -24,18 +26,24 @@ public class WeaponSystem : MonoBehaviour
 
     void Update()
     {
-        if(!PlayerManager.Instance.playerData.isCharacterActive) return;
+        
 
         if(Input.GetKeyDown(KeyCode.Tab)){
             DeactivateWeapon();
             ChangeWeapon();
         }
         if(Input.GetKeyDown(KeyCode.F)){
-            ActivateWeapon();
+            if (weaponActive)
+            {
+                DeactivateWeapon();
+            }
+            else
+            {
+                ActivateWeapon();
+            }
         }
-        else if(Input.GetKeyUp(KeyCode.F)){
-            DeactivateWeapon();
-        }
+
+        if (!PlayerManager.Instance.playerData.isCharacterActive) return;
     }
 
     void CreateObjectsAndAddToList(){
@@ -55,10 +63,12 @@ public class WeaponSystem : MonoBehaviour
     }
 
     void ActivateWeapon(){
+        weaponActive = true;
         weaponInventory[WeaponIndex].ActionOn();
     }
 
     void DeactivateWeapon(){
+        weaponActive = false;
         weaponInventory[WeaponIndex].ActionOff();
     }
 
